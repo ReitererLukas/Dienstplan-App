@@ -4,20 +4,21 @@ import 'package:dienstplan/models/service.dart';
 import 'package:dienstplan/screens/arguments/service_screen_arguments.dart';
 import 'package:flutter/material.dart';
 
-class ServiceScreen extends StatelessWidget {
-  const ServiceScreen({super.key});
+class ServiceDetailScreen extends StatelessWidget {
+  const ServiceDetailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final Service service =
-        (ModalRoute.of(context)!.settings.arguments as ServiceScreenArguments)
+        (ModalRoute.of(context)!.settings.arguments as ServiceDetailScreenArguments)
             .service;
 
     return Scaffold(
-        appBar: DienstplanAppBar(context),
-        body: Column(
-          children: buildColumn(service),
-        ));
+      appBar: DienstplanAppBar(context),
+      body: ListView(
+        children: buildColumn(service),
+      ),
+    );
   }
 
   List<Widget> buildColumn(Service service) {
@@ -34,7 +35,10 @@ class ServiceScreen extends StatelessWidget {
           color: Colors.grey,
           thickness: 2,
         ),
-        const Text("Alte Versionen"),
+        const Align(
+          alignment: Alignment.center,
+          child: Text("Alte Versionen"),
+        ),
       ],
     );
 

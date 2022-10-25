@@ -1,7 +1,7 @@
 import 'package:dienstplan/models/service.dart';
 
-class ServiceScreenArguments {
+class ServiceDetailScreenArguments {
   final Service service;
 
-  ServiceScreenArguments(this.service);
+  ServiceDetailScreenArguments(this.service);
 }

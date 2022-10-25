@@ -12,8 +12,6 @@ class RegisterLinkScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    linkFieldController.text = "http://192.168.178.121/Private.ics";
-    // linkFieldController.text = "https://dienstplan.st.roteskreuz.at/Calendar/1213626/v3VkibGs/Private.ics";
 
     return Scaffold(
       appBar: DienstplanAppBar(context),

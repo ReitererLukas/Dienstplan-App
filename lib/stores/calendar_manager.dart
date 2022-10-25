@@ -17,12 +17,16 @@ abstract class _CalendarManager with Store {
   @action
   Future<void> loadList() async {
     List<Service> services = await CalendarLoader().loadCalendar();
-    if(services.isNotEmpty) {
+    if (services.isNotEmpty) {
       await getIt<CalendarDatabase>().updateDatabase(services);
       this.services = services;
     } else {
       this.services = await getIt<CalendarDatabase>().fetchServices();
     }
+  }
+
+  Future<List<Service>> getAllServices() async {
+    return await getIt<CalendarDatabase>().fetchAllServices();
   }
 
   @action

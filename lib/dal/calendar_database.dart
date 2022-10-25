@@ -1,10 +1,9 @@
 import 'package:dienstplan/dal/repository/service_repo.dart';
 import 'package:dienstplan/main.dart';
 import 'package:dienstplan/models/service.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 class CalendarDatabase {
-  Future<void> loadDatabase() async {}
 
   Future<void> updateDatabase(List<Service> services) async {
     await getIt<ServiceRepo>().setAllInactive();
@@ -45,5 +44,26 @@ class CalendarDatabase {
 
   Future<List<Service>> fetchServices() async {
     return await getIt<ServiceRepo>().queryAllActive();
+  }
+
+  Future<List<Service>> fetchAllServices() async {
+
+    List<Service> services =  await getIt<ServiceRepo>().queryAll();
+    services.sort((a, b) => a.start.compareTo(b.start));
+    List<Service> res = [];
+    for(Service s in services) {
+      if(res.isEmpty) {
+        res.add(s);
+      } else {
+        if(res.last.start.isAtSameMomentAs(s.start)) {
+          res.last.addPredecessors([s]);
+        } else {
+          res.add(s);
+        }
+      }
+    }
+
+
+    return res;
   }
 }

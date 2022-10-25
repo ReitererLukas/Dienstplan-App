@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:dienstplan/dal/calendar_database.dart';
 import 'package:dienstplan/dal/repository/service_repo.dart';
+import 'package:dienstplan/screens/all_service_screen.dart';
 import 'package:dienstplan/screens/menu_screen.dart';
-import 'package:dienstplan/screens/service_screen.dart';
+import 'package:dienstplan/screens/service_detail_screen.dart';
 import 'package:dienstplan/stores/calendar_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -57,7 +58,8 @@ class MyApp extends StatelessWidget {
         '/registerLink': (context) => RegisterLinkScreen(),
         '/list': (context) => const ListScreen(),
         "/settings": (context) => const MenuScreen(),
-        "/list/details": (context) => const ServiceScreen(),
+        "/list/details": (context) => const ServiceDetailScreen(),
+        "/list/all": (context) => const AllServiceScreen(),
       },
       initialRoute:  prefs.containsKey("calendarLink")?"/list":"/registerLink",
     );

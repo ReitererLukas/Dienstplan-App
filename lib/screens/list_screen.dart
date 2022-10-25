@@ -40,14 +40,26 @@ class ListScreen extends StatelessWidget {
         ),
       );
     }
+    elements.add(
+      GestureDetector(
+        onTap: () => Navigator.pushNamed(context, "/list/all"),
+        child: Container(
+          margin: const EdgeInsets.only(top: 15, bottom: 30),
+          child: const Align(
+            alignment: Alignment.center,
+            child: Text("Alle Dienste anzeigen"),
+          ),
+        ),
+      ),
+    );
 
     return elements;
   }
 
   void onTap(context, Service service) {
     if (service.predecessors.isNotEmpty) {
-      Navigator.pushNamed(
-          context, "/list/details", arguments: ServiceScreenArguments(service));
+      Navigator.pushNamed(context, "/list/details",
+          arguments: ServiceDetailScreenArguments(service));
     }
   }
 }

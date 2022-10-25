@@ -60,7 +60,7 @@ class ServiceListElement extends StatelessWidget {
               TextLine(
                 service.coWorkers
                     .map((e) => e.replaceAll(r"\", ""))
-                    .reduce((e1, e2) => "$e1, $e2"),
+                    .reduce((e1, e2) => "$e1,$e2"),
                 textDecorator(),
               ),
             ],
