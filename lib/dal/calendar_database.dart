@@ -49,7 +49,6 @@ class CalendarDatabase {
   Future<List<Service>> fetchAllServices() async {
 
     List<Service> services =  await getIt<ServiceRepo>().queryAll();
-    services.sort((a, b) => a.start.compareTo(b.start));
     List<Service> res = [];
     for(Service s in services) {
       if(res.isEmpty) {

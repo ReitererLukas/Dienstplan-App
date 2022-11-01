@@ -23,7 +23,15 @@ class ListScreen extends StatelessWidget {
                 children: createListViewElements(context),
               );
             }
-            return const Center(child: Text("Keine Dienste gefunden!"));
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Container(
+                height: MediaQuery.of(context).size.height,
+                child: const Center(
+                  child: Text("Keine Dienste gefunden!"),
+                ),
+              ),
+            );
           },
         ),
       ),

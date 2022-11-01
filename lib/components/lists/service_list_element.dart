@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 class ServiceListElement extends StatelessWidget {
   final Service service;
   final NumberFormat leadingZero = NumberFormat("00");
-  final Color elementColor = const Color.fromARGB(255, 72, 72, 72);
+  final Color elementColor = const Color.fromARGB(255, 37, 37, 37);
   final Color highlightColorRTW = const Color.fromARGB(255, 226, 122, 119);
   final Color highlightColorNEF = const Color.fromARGB(255, 188, 164, 252);
   final Color highlightColorBKTW = const Color.fromARGB(255, 253, 222, 168);

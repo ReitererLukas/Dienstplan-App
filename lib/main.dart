@@ -34,7 +34,7 @@ Future setup() async {
 
   await getIt<ServiceRepo>().open();
 
-  if(prefs.containsKey("calendarLink")) {
+  if (prefs.containsKey("calendarLink")) {
     await getIt<CalendarManager>().loadList();
   }
 }
@@ -44,14 +44,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Dienstplan',
       theme: ThemeData(
-        primarySwatch: Colors.red,
-        scaffoldBackgroundColor: const Color.fromARGB(255, 20,20,20),
-        dialogBackgroundColor: const Color.fromARGB(255, 20,20,20),
-        textTheme: Theme.of(context).textTheme.apply(bodyColor: Colors.white)
+          primarySwatch: Colors.red,
+          scaffoldBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
+          dialogBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
+          textTheme: Theme
+              .of(context)
+              .textTheme
+              .apply(bodyColor: Colors.white)
       ),
       debugShowCheckedModeBanner: false,
       routes: {
@@ -61,7 +63,9 @@ class MyApp extends StatelessWidget {
         "/list/details": (context) => const ServiceDetailScreen(),
         "/list/all": (context) => const AllServiceScreen(),
       },
-      initialRoute:  prefs.containsKey("calendarLink")?"/list":"/registerLink",
+      initialRoute: prefs.containsKey("calendarLink")
+          ? "/list"
+          : "/registerLink",
     );
   }
 }

@@ -10,7 +10,7 @@ class ServiceRepo {
   }
 
   Future<List<Service>> queryAllActive() async {
-    List res = await db.query("dienstplan");
+    List res = await db.query("dienstplan", where: "active=1");
     return _rowsToObjects(res);
   }
 
@@ -53,6 +53,8 @@ class ServiceRepo {
     for (Map<String, dynamic> s in res) {
       services.add(Service.fromDB(s));
     }
+
+    services.sort((a, b) => a.start.compareTo(b.start));
     return services;
   }
 

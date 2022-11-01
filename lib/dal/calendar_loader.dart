@@ -20,7 +20,7 @@ class CalendarLoader {
 
     try {
       if ((await Connectivity().checkConnectivity()) !=
-          ConnectivityResult.none) {
+          ConnectivityResult.none && prefs.containsKey("calendarLink")) {
         String calendar = await get(Uri.parse(prefs.getString("calendarLink")!))
             .timeout(const Duration(seconds: 2))
             .then((resp) => utf8.decode(resp.bodyBytes));
