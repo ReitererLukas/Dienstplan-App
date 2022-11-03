@@ -12,18 +12,53 @@ class RegisterLinkScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: DienstplanAppBar(context),
       body: Align(
         alignment: Alignment.center,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            TextField(controller: linkFieldController),
-            ElevatedButton(
-                child: const Text("Register Calendar"),
-                onPressed: () => onRegister(context)),
+            Column(
+              children: const [
+                Text("Dienstplan-App", style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+              ],
+            ),
+            Column(
+              children: [
+                Container(
+                  child: Text("Kalendar Link vom\nDienstplan-Portal einfügen",
+                      textAlign: TextAlign.center),
+                  margin: EdgeInsets.only(bottom: 25),
+                ),
+                Container(
+                  margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
+                  child: TextField(
+                    controller: linkFieldController,
+                    // autofocus: true,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 2)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 2)),
+                      disabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 2)),
+                      errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 2)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 2)),
+                      focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.red, width: 2)),
+                      hintText: "Kalender Link",
+                      hintStyle: TextStyle(color: Color.fromARGB(120, 255,255,255),)
+                    ),
+                  ),
+                ),
+                ElevatedButton(
+                    child: const Text("Kalender hinzufügen"),
+                    onPressed: () => onRegister(context)),
+              ],
+            ),
           ],
         ),
       ),
