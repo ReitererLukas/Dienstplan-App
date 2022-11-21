@@ -1,7 +1,6 @@
 import 'package:dienstplan/dal/repository/service_repo.dart';
 import 'package:dienstplan/main.dart';
 import 'package:dienstplan/models/service.dart';
-import 'package:flutter/foundation.dart';
 
 class CalendarDatabase {
 

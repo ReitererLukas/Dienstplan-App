@@ -4,8 +4,14 @@ import 'package:dienstplan/models/service.dart';
 import 'package:dienstplan/screens/arguments/service_screen_arguments.dart';
 import 'package:flutter/material.dart';
 
-class ServiceDetailScreen extends StatelessWidget {
+class ServiceDetailScreen extends StatefulWidget {
   const ServiceDetailScreen({super.key});
+
+  @override
+  State<ServiceDetailScreen> createState() => ServiceDetailScreenState();
+}
+
+class ServiceDetailScreenState extends State<ServiceDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +20,7 @@ class ServiceDetailScreen extends StatelessWidget {
             .service;
 
     return Scaffold(
-      appBar: DienstplanAppBar(context),
+      appBar: DienstplanAppBar(context, setState: setState,),
       body: ListView(
         children: buildColumn(service),
       ),

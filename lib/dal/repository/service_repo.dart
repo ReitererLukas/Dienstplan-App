@@ -67,5 +67,6 @@ class ServiceRepo {
 
   Future<void> clearTable() async {
     db.execute("DELETE FROM dienstplan");
+    // db.execute("DELETE FROM sqlite_sequence WHERE name=dienstplan");
   }
 }

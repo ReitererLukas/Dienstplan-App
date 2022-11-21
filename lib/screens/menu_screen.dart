@@ -13,16 +13,20 @@ class MenuScreen extends StatefulWidget {
 }
 
 class MenuScreenState extends State<MenuScreen> {
+  bool useArchiver = prefs.getBool("useArchiver") ?? true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DienstplanAppBar(context, showSettings: false),
+      appBar: DienstplanAppBar(context, showSettings: false, setState: setState,),
       body: Column(
         children: [
           SettingsSwitchButton(
             text: "Dienstplan archivieren",
-            isOn: true,
-            action: (val) => debugPrint("$val archivieren"),
+            isOn: useArchiver,
+            action: (val) => switchArchiveMode(val),
+            useConfirmationDialog: true,
+            confirmationDialogText: "Willst du Archivieren wirklich deaktivieren? Alle deine Daten gehen dadurch verloren!!!",
           ),
           SettingsButton(text: "Dienstplan entfernen", action: removeDienstplan)
         ],
@@ -36,8 +40,16 @@ class MenuScreenState extends State<MenuScreen> {
         getIt<CalendarManager>().clear();
         Navigator.pushNamedAndRemoveUntil(
             context, "/registerLink", (r) => false);
-
       }
     });
+  }
+
+  void switchArchiveMode(bool useArchiver) {
+    if(!useArchiver) {
+      prefs.setBool("useArchiver", false);
+      getIt<CalendarManager>().clearDatabase();
+    } else {
+      prefs.setBool("useArchiver", true);
+    }
   }
 }

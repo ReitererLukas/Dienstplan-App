@@ -1,25 +1,31 @@
+import 'package:dienstplan/components/dialogs/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 
 class SettingsSwitchButton extends StatefulWidget {
   final String text;
-  final bool isOn;
+  bool isOn;
   final Function action;
+  final bool useConfirmationDialog;
+  final String confirmationDialogText;
 
-  const SettingsSwitchButton(
+  SettingsSwitchButton(
       {super.key,
       required this.text,
       required this.isOn,
-      required this.action});
+      required this.action,
+      this.useConfirmationDialog = false,
+      this.confirmationDialogText = ""});
 
   @override
   State<SettingsSwitchButton> createState() => SettingsSwitchButtonState();
 }
 
 class SettingsSwitchButtonState extends State<SettingsSwitchButton> {
-  bool switchState = true;
-
+  late bool switchState;
   @override
   Widget build(BuildContext context) {
+    switchState = widget.isOn;
+
     return Container(
       margin: const EdgeInsets.all(10),
       child: Row(
@@ -27,10 +33,24 @@ class SettingsSwitchButtonState extends State<SettingsSwitchButton> {
         children: [
           Text(widget.text),
           Switch(
-            value: switchState,
+            value: widget.isOn,
             onChanged: (val) {
-              setState(() => switchState = val);
-              widget.action(val);
+              if (!val && widget.useConfirmationDialog) {
+                showDialog(
+                        context: context,
+                        builder: ((context) => ConfirmationDialog(
+                            text: widget.confirmationDialogText)),
+                        barrierDismissible: false)
+                    .then((res) {
+                  if (res[0]) {
+                    setState(() => widget.isOn = val);
+                    widget.action(val);
+                  }
+                });
+              } else {
+                setState(() => widget.isOn = val);
+                widget.action(val);
+              }
             },
           )
         ],

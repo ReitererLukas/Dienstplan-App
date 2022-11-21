@@ -17,11 +17,14 @@ abstract class _CalendarManager with Store {
   @action
   Future<void> loadList() async {
     List<Service> services = await CalendarLoader().loadCalendar();
-    if (services.isNotEmpty) {
+
+    if (services.isNotEmpty && (prefs.getBool("useArchiver") ?? true)) {
       await getIt<CalendarDatabase>().updateDatabase(services);
       this.services = services;
-    } else {
+    } else if ((prefs.getBool("useArchiver") ?? true)) {
       this.services = await getIt<CalendarDatabase>().fetchServices();
+    } else {
+      this.services = services;
     }
   }
 
@@ -32,6 +35,11 @@ abstract class _CalendarManager with Store {
   @action
   Future<void> clear() async {
     services.clear();
+    await clearDatabase();
+  }
+
+  @action
+  Future<void> clearDatabase() async {
     await getIt<CalendarDatabase>().reset();
   }
 }

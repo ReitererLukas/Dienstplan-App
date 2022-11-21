@@ -1,19 +1,26 @@
 import 'package:dienstplan/components/app_bar.dart';
 import 'package:dienstplan/components/dialogs/error_dialog.dart';
 import 'package:dienstplan/main.dart';
+import 'package:dienstplan/stores/calendar_manager.dart';
 import 'package:flutter/material.dart';
 
-import '../stores/calendar_manager.dart';
 
-class RegisterLinkScreen extends StatelessWidget {
-  RegisterLinkScreen({super.key});
+
+class RegisterLinkScreen extends StatefulWidget {
+  const RegisterLinkScreen({super.key});
+
+  @override
+  State<RegisterLinkScreen> createState() => RegisterLinkScreenState();
+}
+
+class RegisterLinkScreenState extends State<RegisterLinkScreen> {
 
   final TextEditingController linkFieldController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DienstplanAppBar(context),
+      appBar: DienstplanAppBar(context, showSettings: false, setState: setState,),
       body: Align(
         alignment: Alignment.center,
         child: Column(
@@ -27,9 +34,9 @@ class RegisterLinkScreen extends StatelessWidget {
             Column(
               children: [
                 Container(
-                  child: Text("Kalendar Link vom\nDienstplan-Portal einfügen",
+                  margin: const EdgeInsets.only(bottom: 25),
+                  child: const Text("Kalendar Link vom\nDienstplan-Portal einfügen",
                       textAlign: TextAlign.center),
-                  margin: EdgeInsets.only(bottom: 25),
                 ),
                 Container(
                   margin: const EdgeInsets.only(left: 15, right: 15, bottom: 20),

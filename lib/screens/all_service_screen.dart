@@ -5,15 +5,20 @@ import 'package:dienstplan/models/service.dart';
 import 'package:dienstplan/screens/arguments/service_screen_arguments.dart';
 import 'package:dienstplan/stores/calendar_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 
-class AllServiceScreen extends StatelessWidget {
+class AllServiceScreen extends StatefulWidget {
   const AllServiceScreen({super.key});
+
+  @override
+  State<AllServiceScreen> createState() => AllServiceScreenState();
+}
+
+class AllServiceScreenState extends State<AllServiceScreen> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DienstplanAppBar(context),
+      appBar: DienstplanAppBar(context, setState: setState,),
       body: FutureBuilder(
         future: getIt<CalendarManager>().getAllServices(),
         builder: ((context, snapshot) {

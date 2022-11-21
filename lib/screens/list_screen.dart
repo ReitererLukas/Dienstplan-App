@@ -7,13 +7,19 @@ import 'package:dienstplan/stores/calendar_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 
-class ListScreen extends StatelessWidget {
+class ListScreen extends StatefulWidget {
   const ListScreen({super.key});
+
+  @override
+  State<ListScreen> createState() => ListScreenState();
+}
+
+class ListScreenState extends State<ListScreen> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DienstplanAppBar(context),
+      appBar: DienstplanAppBar(context, setState: setState,),
       body: RefreshIndicator(
         onRefresh: () async => getIt<CalendarManager>().loadList(),
         child: Observer(
@@ -48,18 +54,21 @@ class ListScreen extends StatelessWidget {
         ),
       );
     }
-    elements.add(
-      GestureDetector(
-        onTap: () => Navigator.pushNamed(context, "/list/all"),
-        child: Container(
-          margin: const EdgeInsets.only(top: 15, bottom: 30),
-          child: const Align(
-            alignment: Alignment.center,
-            child: Text("Alle Dienste anzeigen"),
+
+    if(prefs.getBool("useArchiver") ?? true) {
+      elements.add(
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, "/list/all"),
+          child: Container(
+            margin: const EdgeInsets.only(top: 15, bottom: 30),
+            child: const Align(
+              alignment: Alignment.center,
+              child: Text("Alle Dienste anzeigen"),
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
 
     return elements;
   }

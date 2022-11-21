@@ -41,6 +41,14 @@ mixin _$CalendarManager on _CalendarManager, Store {
     return _$clearAsyncAction.run(() => super.clear());
   }
 
+  late final _$clearDatabaseAsyncAction =
+      AsyncAction('_CalendarManager.clearDatabase', context: context);
+
+  @override
+  Future<void> clearDatabase() {
+    return _$clearDatabaseAsyncAction.run(() => super.clearDatabase());
+  }
+
   @override
   String toString() {
     return '''
