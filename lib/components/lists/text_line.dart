@@ -1,3 +1,4 @@
+import 'package:dienstplan/models/car_types.dart';
 import 'package:flutter/material.dart';
 
 class TextLine extends StatelessWidget {
@@ -10,6 +11,7 @@ class TextLine extends StatelessWidget {
 
   final int predecessors;
   final String timestamp;
+  final CarType carType;
 
   const TextLine(this.text, this.textStyle,
       {super.key,
@@ -17,24 +19,33 @@ class TextLine extends StatelessWidget {
       this.isToday = false,
       this.isTomorrow = false,
       this.predecessors = 0,
-      this.timestamp = ""});
+      this.timestamp = "",
+      this.carType = CarType.rtw,});
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 5),
-              child: Text(
-                text,
-                style: textStyle,
+        Expanded(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Flexible(
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 5),
+                  child: Text(
+                    text,
+                    // textStyle: TextStyle(overflow: TextOverflow.ellipsis),
+                    overflow: TextOverflow.clip,
+                    style: textStyle,
+                  ),
+                ),
               ),
-            ),
-            badge()
-          ],
+              carType != CarType.other?badge():SizedBox()
+            ],
+          ),
         ),
         repeat()
       ],

@@ -21,11 +21,8 @@ class SettingsSwitchButton extends StatefulWidget {
 }
 
 class SettingsSwitchButtonState extends State<SettingsSwitchButton> {
-  late bool switchState;
   @override
   Widget build(BuildContext context) {
-    switchState = widget.isOn;
-
     return Container(
       margin: const EdgeInsets.all(10),
       child: Row(
@@ -44,12 +41,12 @@ class SettingsSwitchButtonState extends State<SettingsSwitchButton> {
                     .then((res) {
                   if (res[0]) {
                     setState(() => widget.isOn = val);
-                    widget.action(val);
+                    widget.action();
                   }
                 });
               } else {
                 setState(() => widget.isOn = val);
-                widget.action(val);
+                widget.action();
               }
             },
           )

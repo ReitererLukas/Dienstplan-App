@@ -1,4 +1,5 @@
 import 'package:dienstplan/components/lists/text_line.dart';
+import 'package:dienstplan/models/car_types.dart';
 import 'package:dienstplan/models/service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ class ServiceListElement extends StatelessWidget {
   final Color highlightColorRTW = const Color.fromARGB(255, 226, 122, 119);
   final Color highlightColorNEF = const Color.fromARGB(255, 188, 164, 252);
   final Color highlightColorBKTW = const Color.fromARGB(255, 253, 222, 168);
+  final Color highlightColorOthers = const Color.fromARGB(255, 196, 196, 196);
   final bool showNumberOfPredecessors;
   final bool showBadge;
 
@@ -18,6 +20,8 @@ class ServiceListElement extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CarType carType = CarType.get(service.carType);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,11 +30,11 @@ class ServiceListElement extends StatelessWidget {
           margin: const EdgeInsets.fromLTRB(15, 8, 15, 0),
           height: 8,
           decoration: BoxDecoration(
-            color: service.carType == "RTW"
+            color: carType == CarType.rtw
                 ? highlightColorRTW
-                : service.carType == "NEF"
+                : carType == CarType.nef
                     ? highlightColorNEF
-                    : highlightColorBKTW,
+                    : carType == CarType.bktw?highlightColorBKTW:highlightColorOthers,
             borderRadius:
                 const BorderRadiusDirectional.vertical(top: Radius.circular(5)),
           ),
@@ -52,17 +56,16 @@ class ServiceListElement extends StatelessWidget {
                   timestamp: formatTimestamp(service.timeStamp),
                   predecessors: showNumberOfPredecessors
                       ? service.predecessors.length
-                      : -1),
+                      : -1,
+                  carType: carType,),
               TextLine(
                 "${formatWorkingDuration(service.start, service.end)} @${service.location}",
                 textDecorator(grayscale: true),
               ),
-              TextLine(
-                service.coWorkers
-                    .map((e) => e.replaceAll(r"\", ""))
-                    .reduce((e1, e2) => "$e1,$e2"),
+              ![".",""].contains(coWorkers(service.coWorkers)) ?TextLine(
+                coWorkers(service.coWorkers),
                 textDecorator(),
-              ),
+              ):Container(),
             ],
           ),
         ),
@@ -106,10 +109,17 @@ class ServiceListElement extends StatelessWidget {
 
   TextStyle textDecorator({bool bold = false, grayscale = false}) {
     return TextStyle(
+        overflow: TextOverflow.ellipsis,
         fontSize: 15,
         color: grayscale
             ? const Color.fromARGB(255, 156, 156, 156)
             : const Color.fromARGB(255, 255, 255, 255),
         fontWeight: bold ? FontWeight.bold : FontWeight.normal);
+  }
+
+  String coWorkers(List<String> list) {
+    return list
+        .map((e) => e.replaceAll(r"\", ""))
+        .reduce((e1, e2) => "$e1,$e2");
   }
 }

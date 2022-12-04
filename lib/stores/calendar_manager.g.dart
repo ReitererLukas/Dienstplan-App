@@ -33,20 +33,28 @@ mixin _$CalendarManager on _CalendarManager, Store {
     return _$loadListAsyncAction.run(() => super.loadList());
   }
 
-  late final _$clearAsyncAction =
-      AsyncAction('_CalendarManager.clear', context: context);
+  late final _$removeServicesFromActiveUserAsyncAction = AsyncAction(
+      '_CalendarManager.removeServicesFromActiveUser',
+      context: context);
 
   @override
-  Future<void> clear() {
-    return _$clearAsyncAction.run(() => super.clear());
+  Future<void> removeServicesFromActiveUser() {
+    return _$removeServicesFromActiveUserAsyncAction
+        .run(() => super.removeServicesFromActiveUser());
   }
 
-  late final _$clearDatabaseAsyncAction =
-      AsyncAction('_CalendarManager.clearDatabase', context: context);
+  late final _$_CalendarManagerActionController =
+      ActionController(name: '_CalendarManager', context: context);
 
   @override
-  Future<void> clearDatabase() {
-    return _$clearDatabaseAsyncAction.run(() => super.clearDatabase());
+  void clearServiceList() {
+    final _$actionInfo = _$_CalendarManagerActionController.startAction(
+        name: '_CalendarManager.clearServiceList');
+    try {
+      return super.clearServiceList();
+    } finally {
+      _$_CalendarManagerActionController.endAction(_$actionInfo);
+    }
   }
 
   @override

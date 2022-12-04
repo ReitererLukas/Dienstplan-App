@@ -2,6 +2,8 @@ import 'package:dienstplan/dal/calendar_database.dart';
 import 'package:dienstplan/dal/calendar_loader.dart';
 import 'package:dienstplan/main.dart';
 import 'package:dienstplan/models/service.dart';
+import 'package:dienstplan/stores/user_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 
 // Include generated file
@@ -18,10 +20,17 @@ abstract class _CalendarManager with Store {
   Future<void> loadList() async {
     List<Service> services = await CalendarLoader().loadCalendar();
 
-    if (services.isNotEmpty && (prefs.getBool("useArchiver") ?? true)) {
-      await getIt<CalendarDatabase>().updateDatabase(services);
+    services.sort((a, b) {
+      if(a.start.compareTo(b.start) == 0) {
+        return b.timeStamp.compareTo(a.timeStamp);
+      }
+      return a.start.compareTo(b.start);
+    });
+
+    if (services.isNotEmpty && getIt<UserManager>().archive) {
+      await getIt<CalendarDatabase>().updateServicesInDatabase(services);
       this.services = services;
-    } else if ((prefs.getBool("useArchiver") ?? true)) {
+    } else if (getIt<UserManager>().archive) {
       this.services = await getIt<CalendarDatabase>().fetchServices();
     } else {
       this.services = services;
@@ -33,13 +42,14 @@ abstract class _CalendarManager with Store {
   }
 
   @action
-  Future<void> clear() async {
+  void clearServiceList() {
     services.clear();
-    await clearDatabase();
   }
 
   @action
-  Future<void> clearDatabase() async {
-    await getIt<CalendarDatabase>().reset();
+  Future<void> removeServicesFromActiveUser() async {
+    await getIt<CalendarDatabase>().removeServicesFromUser();
+    services.clear();
   }
+
 }

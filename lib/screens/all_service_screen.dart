@@ -18,7 +18,7 @@ class AllServiceScreenState extends State<AllServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DienstplanAppBar(context, setState: setState,),
+      appBar: DienstplanAppBar(stateOfScreen: this),
       body: FutureBuilder(
         future: getIt<CalendarManager>().getAllServices(),
         builder: ((context, snapshot) {

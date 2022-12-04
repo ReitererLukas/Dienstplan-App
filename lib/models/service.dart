@@ -10,7 +10,12 @@ class Service {
       this.timeStamp,
       {this.id = 0});
 
-  bool equalTo(Service other) {
+
+  @override
+  bool operator ==(Object other) {
+    if(other is! Service) {
+      return false;
+    }
     return coWorkers.reduce((e1, e2) => "$e1, $e2").replaceAll(" ", "") ==
         other.coWorkers.reduce((e1, e2) => "$e1, $e2").replaceAll(" ", "")
         && start.compareTo(other.start) == 0

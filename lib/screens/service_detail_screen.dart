@@ -20,7 +20,7 @@ class ServiceDetailScreenState extends State<ServiceDetailScreen> {
             .service;
 
     return Scaffold(
-      appBar: DienstplanAppBar(context, setState: setState,),
+      appBar: DienstplanAppBar(stateOfScreen: this),
       body: ListView(
         children: buildColumn(service),
       ),

@@ -1,21 +1,35 @@
+import 'package:dienstplan/main.dart';
+import 'package:dienstplan/models/car_types.dart';
 import 'package:dienstplan/models/service.dart';
+import 'package:dienstplan/stores/user_manager.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:get_it/get_it.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ServiceRepo {
-  late final Database db;
+  final Database db;
+
+  ServiceRepo(this.db);
 
   Future<List<Service>> queryAll() async {
-    List res = await db.rawQuery("SELECT * FROM dienstplan");
-    return _rowsToObjects(res);
+    List res = await db.query("dienstplan", where: "userId=?", whereArgs: [getIt<UserManager>().userId]);
+    List<Service> services = _rowsToObjects(res);
+
+    return services;
   }
 
   Future<List<Service>> queryAllActive() async {
-    List res = await db.query("dienstplan", where: "active=1");
+    List res = await db.query("dienstplan", where: "active=? AND userId=?",whereArgs: [1, getIt<UserManager>().userId]);
+    return _rowsToObjects(res);
+  }
+
+  Future<List<Service>> queryAllActiveWithUserId(int userId) async {
+    List res = await db.query("dienstplan", where: "active=? AND userId=?",whereArgs: [1, userId]);
     return _rowsToObjects(res);
   }
 
   Future<void> setAllInactive() async {
-    await db.update("dienstplan", {"active": 0});
+    await db.update("dienstplan", {"active": 0}, where: "userId=?", whereArgs: [getIt<UserManager>().userId]);
   }
 
   Future<List<Service>> queryCustom(String query,
@@ -34,13 +48,27 @@ class ServiceRepo {
       "location": service.location,
       "carType": service.carType,
       "active": 1,
+      "userId": getIt<UserManager>().userId,
     });
   }
 
   Future<List<Service>> getPredecessors(Service service) async {
+    List<String> possibleCarTypes = CarType.values.map((e) => e.value).where((e) => e != "OTHER").toList();
+
+    String query =  "SELECT * FROM dienstplan WHERE startTime = ? AND active = ? AND userId=? AND carType in (${List.filled(possibleCarTypes.length, '?').join(',')})";
+    if(CarType.get(service.carType) == CarType.other) {
+      query =  "SELECT * FROM dienstplan WHERE startTime = ? AND active = ? AND userId=? AND carType not in (${List.filled(possibleCarTypes.length, '?').join(',')})";
+    }
+
+    List args = [
+      service.start.toIso8601String(),
+      0,
+      getIt<UserManager>().userId
+    ];
+    args.addAll(possibleCarTypes);
+
     List res = await db.rawQuery(
-        "SELECT * FROM dienstplan WHERE startTime = ? AND active = 0",
-        [service.start.toIso8601String()]);
+        query, args);
     return _rowsToObjects(res);
   }
 
@@ -48,25 +76,24 @@ class ServiceRepo {
     await db.rawUpdate("UPDATE dienstplan SET active=1 WHERE id=?", [id]);
   }
 
-  List<Service> _rowsToObjects(List res) {
+  List<Service> _rowsToObjects(List res, {bool sort=true}) {
     List<Service> services = [];
     for (Map<String, dynamic> s in res) {
       services.add(Service.fromDB(s));
     }
 
-    services.sort((a, b) => a.start.compareTo(b.start));
+    if(sort) {
+      services.sort((a, b) {
+        if(a.start.compareTo(b.start) == 0) {
+          return b.timeStamp.compareTo(a.timeStamp);
+        }
+        return a.start.compareTo(b.start);
+      });
+    }
     return services;
   }
 
-  Future<void> open() async {
-    db = await openDatabase('dienstplan.db', onCreate: (db, version) async {
-      await db.execute(
-          "CREATE TABLE dienstplan(id INTEGER PRIMARY KEY, members TEXT, startTime TEXT, endTime TEXT, location TEXT, carType TEXT, timestamp TEXT, active INTEGER)");
-    }, version: 1);
-  }
-
-  Future<void> clearTable() async {
-    db.execute("DELETE FROM dienstplan");
-    // db.execute("DELETE FROM sqlite_sequence WHERE name=dienstplan");
+  Future<void> delete({String where = "", List args = const []}) async {
+    await db.delete("dienstplan", where: where, whereArgs: args);
   }
 }
