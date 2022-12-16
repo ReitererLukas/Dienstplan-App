@@ -1,0 +1,6 @@
+dockerSecrets
+node_modules
+DBV
+.vscode
+docker-compose-mongo.yaml
+.env

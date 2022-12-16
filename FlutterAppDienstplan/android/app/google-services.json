@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "852216624223",
+    "project_id": "dienstplan-1091a",
+    "storage_bucket": "dienstplan-1091a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:852216624223:android:6fea57fe5e8df5b14f57ea",
+        "android_client_info": {
+          "package_name": "com.example.dienstplan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "852216624223-6ods4quse2pmr2ouatjodtubm1ii35qc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATUNLO7R_EbNJL0x6uteGkZOlazzUPtCg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "852216624223-6ods4quse2pmr2ouatjodtubm1ii35qc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
