@@ -3,6 +3,7 @@ import 'dart:convert' show utf8;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dienstplan/main.dart';
 import 'package:dienstplan/models/service.dart';
+import 'package:dienstplan/notifications/notification_server.dart';
 import 'package:dienstplan/stores/user_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -17,6 +18,8 @@ class CalendarLoader {
   CalendarLoader._internal();
 
   Future<List<Service>> loadCalendar() async {
+    getIt<NotificationServer>().refreshTimerOfDienstplanOnServer(getIt<UserManager>().activeUser!.notificationId);
+
     if ((await Connectivity().checkConnectivity()) != ConnectivityResult.none &&
         getIt<UserManager>().activeUser != null) {
       String calendar =
