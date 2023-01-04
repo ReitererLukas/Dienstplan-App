@@ -27,6 +27,7 @@ class RegisterLinkScreenState extends State<RegisterLinkScreen> {
         stateOfScreen: this,
         showSettings: false,
       ),
+      floatingActionButton: settingsFAB(),
       body: Align(
         alignment: Alignment.center,
         child: Column(
@@ -79,7 +80,8 @@ class RegisterLinkScreenState extends State<RegisterLinkScreen> {
                         }
                         return null;
                       },
-                      decoration: textFieldBorderDecoration(hintT: "Kalender Link"),
+                      decoration:
+                          textFieldBorderDecoration(hintT: "Kalender Link"),
                     ),
                   ),
                   ElevatedButton(
@@ -92,6 +94,17 @@ class RegisterLinkScreenState extends State<RegisterLinkScreen> {
         ),
       ),
     );
+  }
+
+  Widget settingsFAB() {
+    if (prefs.getBool("isDev") ?? false) {
+      return FloatingActionButton(
+        onPressed: (() => Navigator.pushNamed(context, "/settings/dev")
+            .then((value) => setState(() {}))),
+        child: const Icon(Icons.settings, size: 32),
+      );
+    }
+    return Container();
   }
 
   void onRegister(context) async {

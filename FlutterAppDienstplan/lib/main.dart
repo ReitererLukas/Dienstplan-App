@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:dienstplan/components/settings/dev_settings.dart';
 import 'package:dienstplan/dal/calendar_database.dart';
 import 'package:dienstplan/notifications/notification_server.dart';
 import 'package:dienstplan/screens/all_service_screen.dart';
+import 'package:dienstplan/screens/dev_settings_screen.dart';
 import 'package:dienstplan/screens/dienstplan_screen.dart';
 import 'package:dienstplan/screens/loading_screen.dart';
 import 'package:dienstplan/screens/service_detail_screen.dart';
@@ -114,9 +116,10 @@ class _MyAppState extends State<MyApp> {
               Theme.of(context).textTheme.apply(bodyColor: Colors.white)),
       debugShowCheckedModeBanner: false,
       routes: {
-        '/registerLink': (context) => RegisterLinkScreen(),
+        '/registerLink': (context) => const RegisterLinkScreen(),
         '/list': (context) => const ListScreen(),
-        "/settings": (context) => const MenuScreen(),
+        "/settings": (context) => const SettingsScreen(),
+        "/settings/dev": (context) => const DevSettingsScreen(),
         "/list/details": (context) => const ServiceDetailScreen(),
         "/list/all": (context) => const AllServiceScreen(),
         "/dienstplan/list": (context) => const DienstplanScreen(),
