@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dienstplan/main.dart';
 import 'package:dienstplan/models/user.dart';
 import 'package:dienstplan/stores/user_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,33 +27,41 @@ class NotificationServer {
     return null;
   }
 
+  bool _isServerEnabled() {
+    return !((prefs.getBool("isDev") ?? false) && !(prefs.getBool("useNotificationServer") ?? true));
+  }
+
   Future<String> registerDienstplan(User user) async {
-    String? token = prefs.getString("gcmToken");
-    if (token != null) {
-      return await _registerDienstplanLinkToApi({
-        "dienstplan": {
-          "dienstplanLink": user.link,
-          "notificationToken": token,
-          "name": user.name
-        }
-      });
+    if(_isServerEnabled()) {
+      String? token = prefs.getString("gcmToken");
+      if (token != null) {
+        return await _registerDienstplanLinkToApi({
+          "dienstplan": {
+            "dienstplanLink": user.link,
+            "notificationToken": token,
+            "name": user.name
+          }
+        });
+      }
     }
     return "";
   }
 
   void updateToken(String newToken) {
-    prefs.setString("gcmToken", newToken);
-    _updateTokenToApi(
-        getIt<UserManager>()
-            .users
-            .where((u) => u.notificationId != "")
-            .map((u) => u.notificationId)
-            .toList(),
-        newToken);
+    if(_isServerEnabled()) {
+      prefs.setString("gcmToken", newToken);
+      _updateTokenToApi(
+          getIt<UserManager>()
+              .users
+              .where((u) => u.notificationId != "")
+              .map((u) => u.notificationId)
+              .toList(),
+          newToken);
+    }
   }
 
-  void removeDienstplan() {
-    _removeDienstplanLinkFromApi(getIt<UserManager>().activeUser!.notificationId);
+  void removeDienstplan(User user) {
+    if(_isServerEnabled()) _removeDienstplanLinkFromApi(user);
   }
 
   Future<void> _updateTokenToApi(List<String> ids, String newToken) async {
@@ -77,16 +86,18 @@ class NotificationServer {
   // server removes dienstplan after 60 days of inactivity
   // => when dp is fetched timer on the server should be updated
   Future<void> refreshTimerOfDienstplanOnServer(String id) async {
-    http.Response resp = await http.patch(Uri.parse("${url}dienstplan/refreshTimer/$id"),
-        headers: _getHeaders());
+    if(_isServerEnabled() && id != "") {
+      http.Response resp = await http.patch(Uri.parse("${url}dienstplan/refreshTimer/$id"),
+          headers: _getHeaders());
 
-    if(resp.statusCode == 404) {
-      getIt<UserManager>().activeUser!.notificationId = await registerDienstplan(getIt<UserManager>().activeUser!);
+      if(resp.statusCode == 404) {
+        getIt<UserManager>().activeUser!.notificationId = await registerDienstplan(getIt<UserManager>().activeUser!);
+      }
     }
   }
 
-  Future<void> _removeDienstplanLinkFromApi(String id) async {
-    http.Response resp = await http.delete(Uri.parse("${url}dienstplan/remove/$id"),
+  Future<void> _removeDienstplanLinkFromApi(User user) async {
+    http.Response resp = await http.delete(Uri.parse("${url}dienstplan/remove/${user.notificationId}"),
         headers: _getHeaders());
     _handleResponse(resp, hasBody: false);
   }

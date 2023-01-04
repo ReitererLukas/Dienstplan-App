@@ -88,6 +88,26 @@ mixin _$UserManager on _UserManager, Store {
     return _$removeUserAsyncAction.run(() => super.removeUser());
   }
 
+  late final _$deactivateServerFeaturesForAllUsersAsyncAction = AsyncAction(
+      '_UserManager.deactivateServerFeaturesForAllUsers',
+      context: context);
+
+  @override
+  Future<void> deactivateServerFeaturesForAllUsers() {
+    return _$deactivateServerFeaturesForAllUsersAsyncAction
+        .run(() => super.deactivateServerFeaturesForAllUsers());
+  }
+
+  late final _$activateServerFeaturesForAllUsersAsyncAction = AsyncAction(
+      '_UserManager.activateServerFeaturesForAllUsers',
+      context: context);
+
+  @override
+  Future<void> activateServerFeaturesForAllUsers() {
+    return _$activateServerFeaturesForAllUsersAsyncAction
+        .run(() => super.activateServerFeaturesForAllUsers());
+  }
+
   late final _$_UserManagerActionController =
       ActionController(name: '_UserManager', context: context);
 

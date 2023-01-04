@@ -1,3 +1,3 @@
-import { fetchDP } from "./fetcher";
+import { fetchDP } from "./dienstplanHasher";
 
-export const fetcher = fetchDP;
+export const dpHasher = fetchDP;

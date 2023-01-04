@@ -47,7 +47,7 @@ abstract class _UserManager with Store {
   @action
   Future<void> switchArchiveMode() async {
     activeUser!.archive = !activeUser!.archive;
-    await getIt<CalendarDatabase>().switchArchiveMode(activeUser!.archive);
+    await getIt<CalendarDatabase>().switchArchiveMode(activeUser!, activeUser!.archive);
 
     if(!activeUser!.archive) {
       await getIt<CalendarManager>().removeServicesFromActiveUser();
@@ -57,7 +57,7 @@ abstract class _UserManager with Store {
   @action
   Future<void> setNotificationId(String id) async {
     activeUser!.notificationId = id;
-    await getIt<CalendarDatabase>().setNotificationId(id);
+    await getIt<CalendarDatabase>().setNotificationId(activeUser!, id);
   }
 
   @action
@@ -72,10 +72,27 @@ abstract class _UserManager with Store {
   @action
   Future<void> removeUser() async {
     if(activeUser!.notificationId != "") {
-      getIt<NotificationServer>().removeDienstplan();
+      getIt<NotificationServer>().removeDienstplan(getIt<UserManager>().activeUser!);
     }
     await activeUser!.delete();
     users.removeWhere((user) => user.userId == activeUser!.userId);
     activeUser = null;
+  }
+
+  @action
+  Future<void> deactivateServerFeaturesForAllUsers() async {
+    for(User user in users) {
+      if(user.notificationId != "") {
+        getIt<NotificationServer>().removeDienstplan(user);
+        await getIt<CalendarDatabase>().setNotificationId(user, "");
+      }
+    }
+  }
+
+  @action
+  Future<void> activateServerFeaturesForAllUsers() async {
+    for(User user in users) {
+      await getIt<CalendarDatabase>().setNotificationId(user,  await getIt<NotificationServer>().registerDienstplan(user));
+    }
   }
 }

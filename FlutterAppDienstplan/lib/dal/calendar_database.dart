@@ -34,20 +34,20 @@ class CalendarDatabase {
     serviceRepo = ServiceRepo(db);
   }
 
-  Future<void> updateServicesInDatabase(List<Service> services) async {
+  Future<void> updateServicesInDatabase(User user, List<Service> services) async {
     await serviceRepo.setAllInactive();
 
     for (Service s in services) {
-      await updateService(s);
+      await updateService(user, s);
     }
   }
 
-  Future<Service> updateService(Service service) async {
+  Future<Service> updateService(User user, Service service) async {
     List<Service> res = await serviceRepo.queryCustom(
         "SELECT * FROM dienstplan WHERE startTime = ? AND userId=? AND carType=?",
         paras: [
           service.start.toIso8601String(),
-          getIt<UserManager>().userId,
+          user.userId,
           service.carType,
         ]);
 
@@ -106,8 +106,8 @@ class CalendarDatabase {
     return res;
   }
 
-  Future<void> removeServicesFromUser() async {
-    await serviceRepo.delete(where: "userId=?", args: [getIt<UserManager>().userId]);
+  Future<void> removeServicesFromUser(User user) async {
+    await serviceRepo.delete(where: "userId=?", args: [user.userId]);
   }
 
   Future<void> addUser(User user) async {
@@ -130,11 +130,12 @@ class CalendarDatabase {
     return (await serviceRepo.queryAllActiveWithUserId(userId)).length;
   }
 
-  Future<void> switchArchiveMode(bool newMode) async {
-    await userRepo.updateUser(getIt<UserManager>().userId, {"archive": newMode?1:0});
+  Future<void> switchArchiveMode(User user, bool newMode) async {
+    await userRepo.updateUser(user.userId, {"archive": newMode?1:0});
   }
 
-  Future<void> setNotificationId(String id) async {
-    await userRepo.updateUser(getIt<UserManager>().userId, {"notificationId": id});
+  Future<void> setNotificationId(User user, String id) async {
+    user.notificationId = id;
+    await userRepo.updateUser(user.userId, {"notificationId": id});
   }
 }

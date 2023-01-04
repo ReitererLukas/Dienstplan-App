@@ -4,7 +4,7 @@ import { authenticate, errorHandler } from "@/api/middleware";
 import mongoose, { connect } from 'mongoose';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import { startNotificationWorker } from '@/notifier/job';
+import { startDienstplanChangeJob, startDienstplanRemoverJob } from '@/jobs';
 import { vault } from "@/helpers/secretVault";
 
 
@@ -18,13 +18,14 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use(authenticate);
-app.use("/token", router);
+app.use("/dienstplan", router);
 
 app.use(errorHandler);
 
 
 initDb().then(() => {
-  startNotificationWorker();
+  startDienstplanChangeJob();
+  startDienstplanRemoverJob();
   app.listen(8000, () => {
     console.log('Server listening on port 8000');
   });

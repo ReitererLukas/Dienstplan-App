@@ -28,7 +28,7 @@ abstract class _CalendarManager with Store {
     });
 
     if (services.isNotEmpty && getIt<UserManager>().activeUser!.archive) {
-      await getIt<CalendarDatabase>().updateServicesInDatabase(services);
+      await getIt<CalendarDatabase>().updateServicesInDatabase( getIt<UserManager>().activeUser!, services);
       this.services = services;
     } else if (getIt<UserManager>().activeUser!.archive) {
       this.services = await getIt<CalendarDatabase>().fetchServices();
@@ -48,7 +48,7 @@ abstract class _CalendarManager with Store {
 
   @action
   Future<void> removeServicesFromActiveUser() async {
-    await getIt<CalendarDatabase>().removeServicesFromUser();
+    await getIt<CalendarDatabase>().removeServicesFromUser(getIt<UserManager>().activeUser!);
     services.clear();
   }
 

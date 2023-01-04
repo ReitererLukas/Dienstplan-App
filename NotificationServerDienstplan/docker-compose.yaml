@@ -1,6 +1,31 @@
 version: '3.5'
 
 services:
+  nginxproxy:
+    image: nginxproxy/nginx-proxy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginxVolumes/conf.d:/etc/nginx/conf.d
+      - ./nginxVolumes/certs:/etc/nginx/certs
+      - ./nginxVolumes/vhost.d:/etc/nginx/vhost.d
+      - ./nginxVolumes/html:/usr/share/nginx/html
+
+  nginxssl:
+    image: nginxproxy/acme-companion
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./nginxVolumes/conf.d:/etc/nginx/conf.d
+      - ./nginxVolumes/acme.sh:/etc/acme.sh
+      - ./nginxVolumes/certs:/etc/nginx/certs
+      - ./nginxVolumes/html:/usr/share/nginx/html
+      - ./nginxVolumes/vhost.d:/etc/nginx/vhost.d
+    environment:
+      - DEFAULT_EMAIL={{email}}
+      - NGINX_PROXY_CONTAINER=notificationserverdienstplan_nginxproxy_1
+
   mongodb:
     image: mongo
     volumes:
@@ -13,22 +38,25 @@ services:
       - mongo_username
       - mongo_password
     healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      test: echo 'db.runCommand(\"ping\").ok' | mongosh localhost:27017/test --quiet
       interval: 10s
       timeout: 10s
       retries: 5
-      # start_period: 40s
 
   backend:
     build:
       context: .
     depends_on:
-      mongodb:
-        condition: service_healthy
-    ports:
-      - 8000:8000
+      - mongodb
+    expose:
+      - 8000
     env_file:
       - ./.env
+    environment:
+      - VIRTUAL_HOST={{domain}}
+      - VIRTUAL_PATH=/api/
+      - VIRTUAL_DEST=/
+      - LETSENCRYPT_HOST={{domain}}
     restart: unless-stopped
 
 secrets:
