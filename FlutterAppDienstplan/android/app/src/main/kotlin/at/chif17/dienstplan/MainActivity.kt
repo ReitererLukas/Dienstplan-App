@@ -1,4 +1,4 @@
-package com.example.dienstplan
+package at.chif17.dienstplan
 
 import io.flutter.embedding.android.FlutterActivity
 

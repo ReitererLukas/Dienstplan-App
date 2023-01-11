@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:852216624223:android:6fea57fe5e8df5b14f57ea",
+        "mobilesdk_app_id": "1:852216624223:android:c39215834f2455e34f57ea",
         "android_client_info": {
-          "package_name": "com.example.dienstplan"
+          "package_name": "at.chif17.dienstplan"
         }
       },
       "oauth_client": [
@@ -29,6 +29,13 @@
             {
               "client_id": "852216624223-6ods4quse2pmr2ouatjodtubm1ii35qc.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "852216624223-g8io3gq3jumk2ttk8qhds79engffncd0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.dienstplan"
+              }
             }
           ]
         }

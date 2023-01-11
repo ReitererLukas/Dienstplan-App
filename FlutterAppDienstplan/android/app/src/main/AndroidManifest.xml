@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.dienstplan">
+    package="at.chif17.dienstplan">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

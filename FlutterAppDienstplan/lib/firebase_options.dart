@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyATUNLO7R_EbNJL0x6uteGkZOlazzUPtCg',
-    appId: '1:852216624223:android:6fea57fe5e8df5b14f57ea',
+    appId: '1:852216624223:android:c39215834f2455e34f57ea',
     messagingSenderId: '852216624223',
     projectId: 'dienstplan-1091a',
     storageBucket: 'dienstplan-1091a.appspot.com',
@@ -59,11 +59,11 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyB9bGmdO6nn_nTawgYtKXztf4DqtFUF_PE',
-    appId: '1:852216624223:ios:2e6da5a33a443a0b4f57ea',
+    appId: '1:852216624223:ios:6f6de0a8a9297ca44f57ea',
     messagingSenderId: '852216624223',
     projectId: 'dienstplan-1091a',
     storageBucket: 'dienstplan-1091a.appspot.com',
-    iosClientId: '852216624223-g8io3gq3jumk2ttk8qhds79engffncd0.apps.googleusercontent.com',
-    iosBundleId: 'com.example.dienstplan',
+    iosClientId: '852216624223-u1p8f595p4evtlk4gh00dsj565pmh7e8.apps.googleusercontent.com',
+    iosBundleId: 'at.chif17.dienstplan',
   );
 }
