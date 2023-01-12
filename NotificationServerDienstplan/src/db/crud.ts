@@ -42,7 +42,6 @@ async function updateDienstplan(id: any, data: Object): Promise<any> {
 }
 
 async function removeDienstplan(id: any) {
-  console.log(id);
   await models.Dienstplan.deleteOne({ _id: id });
 }
 
@@ -55,6 +54,5 @@ async function updateTimerOfDienstplan(id: string): Promise<boolean> {
   }
   return false;
 }
-
 
 export const crud = { insertDienstplan, updateDienstplan, removeDienstplan, findOneDienstplan, findManyDienstplan, updateTimerOfDienstplan, findOneDienstplanNullSafe};

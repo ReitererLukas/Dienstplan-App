@@ -1,17 +1,16 @@
-import 'package:dienstplan/dal/repository/service_repo.dart';
+import 'package:dienstplan/dal/repository/dienstplan_history_repo.dart';
+import 'package:dienstplan/dal/repository/dienstplan_repo.dart';
 import 'package:dienstplan/dal/repository/user_repo.dart';
-import 'package:dienstplan/main.dart';
-import 'package:dienstplan/models/car_types.dart';
 import 'package:dienstplan/models/service.dart';
 import 'package:dienstplan/models/user.dart';
-import 'package:dienstplan/stores/user_manager.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CalendarDatabase {
   late final Database db;
   late final UserRepo userRepo;
-  late final ServiceRepo serviceRepo;
+  late final DienstplanRepo dienstplanRepo;
+  late final DienstplanHistoryRepo dienstplanHistoryRepo;
 
   Future<void> open() async {
     db = await openDatabase('dienstplan.db', version: 1,
@@ -23,91 +22,80 @@ class CalendarDatabase {
         batch.execute(
             "CREATE TABLE user(userId INTEGER PRIMARY KEY, name TEXT, link TEXT, archive INTEGER, notificationId TEXT)");
         batch.execute(
-            "CREATE TABLE dienstplan(id INTEGER PRIMARY KEY, members TEXT, startTime TEXT, endTime TEXT, location TEXT, carType TEXT, timestamp TEXT, active INTEGER, userId INTEGER, FOREIGN KEY(userId) REFERENCES user(userId))");
-
+            "CREATE TABLE dienstplan(uid TEXT, members TEXT, startTime TEXT, endTime TEXT, location TEXT, carType TEXT, timestamp TEXT, removedAt String, userId INTEGER, FOREIGN KEY(userId) REFERENCES user(userId), PRIMARY KEY(uid, userId))"
+                "");
+        batch.execute(
+            "CREATE TABLE dienstplanHistory(uid TEXT, members TEXT, startTime TEXT, endTime TEXT, location TEXT, carType TEXT, timestamp TEXT, userId INTEGER, FOREIGN KEY(userId) REFERENCES user(userId),FOREIGN KEY(uid) REFERENCES dienstplan(uid), PRIMARY KEY(uid, timestamp, userId))");
       }
 
       await batch.commit();
     }), onDowngrade: onDatabaseDowngradeDelete);
 
     userRepo = UserRepo(db);
-    serviceRepo = ServiceRepo(db);
+    dienstplanRepo = DienstplanRepo(db);
+    dienstplanHistoryRepo = DienstplanHistoryRepo(db);
   }
 
-  Future<void> updateServicesInDatabase(User user, List<Service> services) async {
-    await serviceRepo.setAllInactive();
+  Future<void> updateServicesInDatabase(
+      User user, List<Service> services) async {
+    DateTime? maxOldTimestamp = await dienstplanRepo.findMaxTimestamp(user);
+    for (Service newService in services) {
+      await updateService(user, newService);
+    }
 
-    for (Service s in services) {
-      await updateService(user, s);
+    // set removedAt at all dienste where endTime is in the future
+    // services list is not empty
+    if(maxOldTimestamp != null) {
+      await dienstplanRepo.update(
+          {"removedAt": services.first.timestamp.toIso8601String()},
+          where: "timestamp=? AND userId=?",
+          whereArgs: [maxOldTimestamp.toIso8601String(), user.userId]);
     }
   }
 
   Future<Service> updateService(User user, Service service) async {
-    List<Service> res = await serviceRepo.queryCustom(
-        "SELECT * FROM dienstplan WHERE startTime = ? AND userId=? AND carType=?",
-        paras: [
-          service.start.toIso8601String(),
-          user.userId,
-          service.carType,
-        ]);
+    List<Service> res = await dienstplanRepo.queryCustom(
+        where: "uid=? AND userId=?", whereArgs: [service.uid, user.userId]);
 
     if (res.isEmpty) {
-      await serviceRepo.insertService(service);
+      await dienstplanRepo.insertService(service);
     } else {
-      Service newestService = res.firstWhere((s) =>
-          s.timeStamp ==
-          res
-              .map<DateTime>((e) => e.timeStamp)
-              .reduce((e1, e2) => e1.isAfter(e2) ? e1 : e2));
-
-      if (service != newestService) {
-        await serviceRepo.insertService(service);
+      Service oldService = res.first;
+      if (oldService == service) {
+        await dienstplanRepo.update(
+            {"timestamp": service.timestamp.toIso8601String(), "removedAt": null},
+            where: "uid=? and userId=?",
+            whereArgs: [oldService.uid, user.userId]);
       } else {
-        service.id = newestService.id;
-        await serviceRepo.setServiceActive(newestService.id);
+        await dienstplanRepo
+            .update(service.toMap(), where: "uid=? and userId=?", whereArgs: [service.uid, user.userId]);
+        await dienstplanHistoryRepo.insert(oldService);
       }
     }
-    service.addPredecessors(await serviceRepo.getPredecessors(service));
+    service.addPredecessors(
+        await dienstplanHistoryRepo.queryPredecessors(user, service));
     return service;
   }
 
-  Future<List<Service>> fetchServices() async {
-    return await serviceRepo.queryAllActive();
+  Future<List<Service>> fetchStoredServices(User user) async {
+    return await dienstplanRepo.queryActiveStoredServices(user);
   }
 
-  Future<List<Service>> fetchAllServices() async {
-    List<Service> services = await serviceRepo.queryAll();
+  Future<List<Service>> fetchAllServices(User user) async {
+    List<Service> services = await dienstplanRepo.queryAll(user);
 
-    List<Service> res = [];
-    res.addAll(analyseServices(services.where((s) => CarType.get(s.carType) == CarType.other)));
-    res.addAll(analyseServices(services.where((s) => CarType.get(s.carType) != CarType.other)));
-    res.sort((a, b) {
-      if(a.start.compareTo(b.start) == 0) {
-        return b.timeStamp.compareTo(a.timeStamp);
-      }
-      return a.start.compareTo(b.start);
-    });
-    return res;
-  }
-
-  List<Service> analyseServices(Iterable<Service> services) {
-    List<Service> res = [];
-    for (Service s in services) {
-      if (res.isEmpty) {
-        res.add(s);
-      } else {
-        if (res.last.start.isAtSameMomentAs(s.start)) {
-          res.last.addPredecessors([s]);
-        } else {
-          res.add(s);
-        }
-      }
+    for (Service service in services) {
+      service.addPredecessors(
+          await dienstplanHistoryRepo.queryPredecessors(user, service));
     }
-    return res;
+    return services;
   }
 
   Future<void> removeServicesFromUser(User user) async {
-    await serviceRepo.delete(where: "userId=?", args: [user.userId]);
+    await dienstplanHistoryRepo.delete(
+        where: "userId=?",
+        args: [user.userId]);
+    await dienstplanRepo.delete(where: "userId=?", args: [user.userId]);
   }
 
   Future<void> addUser(User user) async {
@@ -126,12 +114,12 @@ class CalendarDatabase {
     await userRepo.deleteUser(userId);
   }
 
-  Future<int> numberOfServicesFromUser(int userId) async {
-    return (await serviceRepo.queryAllActiveWithUserId(userId)).length;
+  Future<int> numberOfServicesFromUser(User user) async {
+    return (await dienstplanRepo.queryActiveStoredServices(user)).length;
   }
 
   Future<void> switchArchiveMode(User user, bool newMode) async {
-    await userRepo.updateUser(user.userId, {"archive": newMode?1:0});
+    await userRepo.updateUser(user.userId, {"archive": newMode ? 1 : 0});
   }
 
   Future<void> setNotificationId(User user, String id) async {

@@ -7,7 +7,7 @@ import { crud } from "@/db/crud";
 
 export function startDienstplanChangeJob() {
   // every 1800000 milliseconds
-  setInterval(worker, 1800000);
+  setInterval(worker, 2000);
 }
 
 async function worker() {
@@ -19,13 +19,20 @@ async function worker() {
   }
 }
 
+function leadingZero(num: number) {
+  if(num < 10) {
+    return "0"+num;
+  }
+  return num+"";
+}
+
 function formatDate(date: Date, format: string): string {
   format = format.replace('YYYY', date.getFullYear()+'');
-  format = format.replace('MM', (date.getMonth()+1)+'');
-  format = format = format.replace('DD', date.getDate()+'');
-  format = format.replace('HH', date.getHours()+'');
-  format = format.replace('mm', date.getMinutes()+'');
-  format = format.replace('ss', date.getSeconds()+'');
+  format = format.replace('MM', leadingZero(date.getMonth()+1));
+  format = format = format.replace('DD', leadingZero(date.getDate()));
+  format = format.replace('HH', leadingZero(date.getHours()));
+  format = format.replace('mm', leadingZero(date.getMinutes()));
+  format = format.replace('ss', leadingZero(date.getSeconds()));
 
   return format;
 }

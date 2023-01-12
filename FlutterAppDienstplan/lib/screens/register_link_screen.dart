@@ -97,14 +97,17 @@ class RegisterLinkScreenState extends State<RegisterLinkScreen> {
   }
 
   Widget settingsFAB() {
-    if (prefs.getBool("isDev") ?? false) {
-      return FloatingActionButton(
-        onPressed: (() => Navigator.pushNamed(context, "/settings/dev")
-            .then((value) => setState(() {}))),
-        child: const Icon(Icons.settings, size: 32),
-      );
-    }
-    return Container();
+    return FloatingActionButton(
+      onPressed: (() => Navigator.pushNamed(context, "/settings/dev")
+          .then((value) => setState(() {}))),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      mini: true,
+      child: Icon(
+        Icons.settings,
+        size: 32,
+        color:  Theme.of(context).scaffoldBackgroundColor,
+      ),
+    );
   }
 
   void onRegister(context) async {

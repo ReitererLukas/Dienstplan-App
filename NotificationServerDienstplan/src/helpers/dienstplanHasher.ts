@@ -30,10 +30,24 @@ export async function fetchDP(link: string): Promise<object | null> {
     index++;
   }
 
-  let currentHashData = dienste.map(d => [...d.entries()].flat().reduce((e1, e2) => e1 + "-" + e2)).reduce((e1, e2) => e1 + "\n" + e2);
-  let earliestdtStart: number = dienste.map(d => parseInt(d.get('DTSTART')!.replace('T',''))).reduce((a, b) => a < b ? a : b);
-  let nextDpHashData = dienste.filter(d => parseInt(d.get('DTSTART')!.replace('T','')) != earliestdtStart).map(d => [...d.entries()].flat().reduce((e1, e2) => e1 + "-" + e2)).reduce((e1, e2) => e1 + "\n" + e2);
+  let currentHashData: string = "";
+  let nextDpHashData: string = "";
+  let earliestdtEnd: number = 0
+
+  if (dienste.length > 0) {
+    currentHashData = dienstplanToString(dienste);
+    let earliestdtStart: number = dienste.map(d => parseInt(d.get('DTSTART')!.replace('T', ''))).reduce((a, b) => a < b ? a : b);
+    let diensteWithoutEarliest = dienste.filter(d => parseInt(d.get('DTSTART')!.replace('T', '')) != earliestdtStart);
+
+    if (diensteWithoutEarliest.length > 0) {
+      nextDpHashData = diensteWithoutEarliest.map(d => [...d.entries()].flat().reduce((e1, e2) => e1 + "-" + e2)).reduce((e1, e2) => e1 + "\n" + e2);
+    }
+    earliestdtEnd = dienste.map(d => parseInt(d.get('DTEND')!.replace('T', ''))).reduce((a, b) => a < b ? a : b);
+  }
   
-  let earliestdtEnd: number = dienste.map(d => parseInt(d.get('DTEND')!.replace('T',''))).reduce((a, b) => a < b ? a : b);
   return { currentHash: Md5.hashStr(currentHashData), hashAfterNext: Md5.hashStr(nextDpHashData), endOfNext: earliestdtEnd }
+}
+
+function dienstplanToString(dienste: Map<string, string>[]) {
+  return dienste.map(d => [...d.entries()].flat().reduce((e1, e2) => e1 + "-" + e2)).reduce((e1, e2) => e1 + "\n" + e2)
 }

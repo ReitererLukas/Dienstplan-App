@@ -1,27 +1,30 @@
+import 'package:dienstplan/main.dart';
+import 'package:dienstplan/stores/user_manager.dart';
+
 class Service {
-  int id;
-  final List<String> coWorkers;
-  final DateTime start, end, timeStamp;
+  final List<String> members;
+  final DateTime startTime, endTime, timestamp;
   final String location;
   final String carType;
+  final String uid;
+  DateTime? removedAt;
   List<Service> predecessors = [];
 
-  Service(this.coWorkers, this.start, this.end, this.location, this.carType,
-      this.timeStamp,
-      {this.id = 0});
-
+  Service(this.uid, this.members, this.startTime, this.endTime, this.location,
+      this.carType, this.timestamp,
+      {removeAt});
 
   @override
   bool operator ==(Object other) {
-    if(other is! Service) {
+    if (other is! Service) {
       return false;
     }
-    return coWorkers.reduce((e1, e2) => "$e1, $e2").replaceAll(" ", "") ==
-        other.coWorkers.reduce((e1, e2) => "$e1, $e2").replaceAll(" ", "")
-        && start.compareTo(other.start) == 0
-        && end.compareTo(other.end) == 0
-        && location == other.location
-        && carType == other.carType;
+    return members.reduce((e1, e2) => "$e1, $e2").replaceAll(" ", "") ==
+            other.members.reduce((e1, e2) => "$e1, $e2").replaceAll(" ", "") &&
+        startTime.compareTo(other.startTime) == 0 &&
+        endTime.compareTo(other.endTime) == 0 &&
+        location == other.location &&
+        carType == other.carType;
   }
 
   void addPredecessors(List<Service> predecessors) {
@@ -30,6 +33,7 @@ class Service {
 
   static Service fromCalendar(Map<String, dynamic> map) {
     return Service(
+      map["uid"],
       map['description']!.split(","),
       DateTime.parse(map['dtstart']!),
       DateTime.parse(map['dtend']!),
@@ -41,13 +45,37 @@ class Service {
 
   static Service fromDB(Map<String, dynamic> map) {
     return Service(
+      map["uid"],
       map['members']!.split(","),
       DateTime.parse(map['startTime']!),
       DateTime.parse(map['endTime']!),
       map["location"]!,
       map["carType"]!,
       DateTime.parse(map['timestamp']!),
-      id: map['id']!,
+      removeAt: DateTime.tryParse(map['removedAt'] ?? ''),
     );
+  }
+
+  Map<String, dynamic> toMap(
+      {includeRemovedAt = false, includeUserId = false, includeUid = false}) {
+    Map<String, dynamic> map = {
+      "members": members.reduce((e1, e2) => "$e1,$e2"),
+      "startTime": startTime.toIso8601String(),
+      "endTime": endTime.toIso8601String(),
+      "timestamp": timestamp.toIso8601String(),
+      "location": location,
+      "carType": carType,
+    };
+    if (includeUid) {
+      map["uid"] = uid;
+    }
+    if (includeRemovedAt && removedAt != null) {
+      map["removedAt"] = removedAt;
+    }
+    if (includeUserId) {
+      map["userId"] = getIt<UserManager>().userId;
+    }
+
+    return map;
   }
 }

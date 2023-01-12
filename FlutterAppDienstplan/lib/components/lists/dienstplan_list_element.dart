@@ -76,7 +76,7 @@ class DienstplanListElement extends StatelessWidget {
                       return Container();
                     },
                     future: getIt<CalendarDatabase>()
-                        .numberOfServicesFromUser(user.userId)),
+                        .numberOfServicesFromUser(user)),
               ],
             ),
           ),

@@ -16,7 +16,6 @@ class UserRepo {
   }
 
   Future<void> deleteUser(int userId) async {
-    await db.delete("dienstplan", where: "userId=?", whereArgs: [userId]);
     await db.delete("user", where: "userId=?", whereArgs: [userId]);
   }
 

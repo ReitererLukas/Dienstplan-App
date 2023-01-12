@@ -30,11 +30,7 @@ class ServiceListElement extends StatelessWidget {
           margin: const EdgeInsets.fromLTRB(15, 8, 15, 0),
           height: 8,
           decoration: BoxDecoration(
-            color: carType == CarType.rtw
-                ? highlightColorRTW
-                : carType == CarType.nef
-                    ? highlightColorNEF
-                    : carType == CarType.bktw?highlightColorBKTW:highlightColorOthers,
+            color: CarType.getColor(carType),
             borderRadius:
                 const BorderRadiusDirectional.vertical(top: Radius.circular(5)),
           ),
@@ -48,22 +44,22 @@ class ServiceListElement extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextLine("${service.carType} ${dateToDayAndMonth(service.start)}",
+              TextLine("${service.carType} ${dateToDayAndMonth(service.startTime)}",
                   textDecorator(bold: true),
                   isTomorrow: checkIsTomorrow() && showBadge,
                   isToday: checkIsToday() && showBadge,
                   isActive: checkIsActive() && showBadge,
-                  timestamp: formatTimestamp(service.timeStamp),
+                  timestamp: formatTimestamp(service.timestamp),
                   predecessors: showNumberOfPredecessors
                       ? service.predecessors.length
                       : -1,
                   carType: carType,),
               TextLine(
-                "${formatWorkingDuration(service.start, service.end)} @${service.location}",
+                "${formatWorkingDuration(service.startTime, service.endTime)} @${service.location}",
                 textDecorator(grayscale: true),
               ),
-              ![".",""].contains(coWorkers(service.coWorkers)) ?TextLine(
-                coWorkers(service.coWorkers),
+              ![".",""].contains(coWorkers(service.members)) ?TextLine(
+                coWorkers(service.members),
                 textDecorator(),
               ):Container(),
             ],
@@ -75,11 +71,11 @@ class ServiceListElement extends StatelessWidget {
 
   bool checkIsTomorrow() {
     return formatDate(DateTime.now().add(const Duration(days: 1))) ==
-        formatDate(service.start);
+        formatDate(service.startTime);
   }
 
   bool checkIsToday() {
-    return formatDate(DateTime.now()) == formatDate(service.start);
+    return formatDate(DateTime.now()) == formatDate(service.startTime);
   }
 
   String formatDate(DateTime date) {
@@ -87,8 +83,8 @@ class ServiceListElement extends StatelessWidget {
   }
 
   bool checkIsActive() {
-    return DateTime.now().isAfter(service.start) &&
-        DateTime.now().isBefore(service.end);
+    return DateTime.now().isAfter(service.startTime) &&
+        DateTime.now().isBefore(service.endTime);
   }
 
   String dateToDayAndMonth(DateTime date) {

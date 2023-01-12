@@ -74,6 +74,7 @@ abstract class _UserManager with Store {
     if(activeUser!.notificationId != "") {
       getIt<NotificationServer>().removeDienstplan(getIt<UserManager>().activeUser!);
     }
+    getIt<CalendarDatabase>().removeServicesFromUser(activeUser!);
     await activeUser!.delete();
     users.removeWhere((user) => user.userId == activeUser!.userId);
     activeUser = null;

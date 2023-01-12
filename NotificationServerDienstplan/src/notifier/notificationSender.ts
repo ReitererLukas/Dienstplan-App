@@ -16,6 +16,7 @@ export function sendNotification(dienst: HydratedDocument<IDienstplan>) {
       body: 'Achtung dein Dienstplan hat sich verändert'
     },
     data: {
+      click_action: "FLUTTER_NOTIFICATION_CLICK",
       notificationId: "" + dienst.id
     },
     token: dienst.notificationToken

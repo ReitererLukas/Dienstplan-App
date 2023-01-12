@@ -15,6 +15,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -27,6 +28,7 @@ void main() async {
   try {
     await setup();
   } on TimeoutException catch (ex) {
+    debugPrint(ex.message);
     runApp(MyApp(
       error: true,
     ));
@@ -115,6 +117,8 @@ class _MyAppState extends State<MyApp> {
           textTheme:
               Theme.of(context).textTheme.apply(bodyColor: Colors.white)),
       debugShowCheckedModeBanner: false,
+      debugShowMaterialGrid: false,
+      showSemanticsDebugger: false,
       routes: {
         '/registerLink': (context) => const RegisterLinkScreen(),
         '/list': (context) => const ListScreen(),

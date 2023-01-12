@@ -5,7 +5,7 @@ import 'package:dienstplan/main.dart';
 import 'package:dienstplan/models/service.dart';
 import 'package:dienstplan/notifications/notification_server.dart';
 import 'package:dienstplan/stores/user_manager.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 
 class CalendarLoader {
