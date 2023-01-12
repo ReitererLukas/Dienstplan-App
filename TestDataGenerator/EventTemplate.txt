@@ -1,0 +1,12 @@
+BEGIN:VEVENT
+DESCRIPTION:{{ member }}
+DTEND:{{ dtend }}
+DTSTAMP:{{ dtstamp }}
+DTSTART:{{ dtstart }}
+LOCATION:{{ location }}
+SEQUENCE:0
+STATUS:Confirmed
+SUMMARY:{{ vehicle }}
+TRANSP:Opaque
+UID:{{ uid }}
+END:VEVENT
