@@ -34,7 +34,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             action: (val) => switchArchiveMode(),
             useConfirmationDialog: true,
             confirmationDialogText:
-                "Willst du Archivieren wirklich deaktivieren? Alle deine Daten gehen dadurch verloren!!!",
+                "Archivieren deaktivieren",
           ),
           const SectionTitle(text: "Benachrichtigungen"),
           SettingsSwitchButton(

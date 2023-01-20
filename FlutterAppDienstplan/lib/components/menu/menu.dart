@@ -1,3 +1,4 @@
+import 'package:dienstplan/components/dialogs/confirmation_dialog.dart';
 import 'package:dienstplan/helpers/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,8 +43,15 @@ class MenuState extends State<Menu> {
     function();
   }
 
-  void removeDienstplan() {
-    removeDienstplanLocally(context);
+  void removeDienstplan() async {
+    List res = await showDialog(
+        context: context,
+        builder: ((context) => ConfirmationDialog(
+            text: "Dienstplan entfernen?")),
+        barrierDismissible: false);
+    if(res.isNotEmpty && res[0]) {
+      removeDienstplanLocally(context);
+    }
   }
 
   Widget getElement(

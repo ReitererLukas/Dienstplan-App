@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 
 ENV NODE_ENV_STAGE="DEV"
+ENV TZ="Europe/Vienna"
 
 RUN npm config set unsafe-perm true
 RUN npm install typescript --location=global
@@ -21,6 +22,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 ENV NODE_ENV_STAGE="PROD"
+ENV TZ="Europe/Vienna"
 
 RUN npm install --omit=dev
 COPY --from=builder /app/dist ./dist

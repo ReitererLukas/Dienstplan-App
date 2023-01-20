@@ -7,7 +7,7 @@ import { crud } from "@/db/crud";
 
 export function startDienstplanChangeJob() {
   // every 1800000 milliseconds
-  setInterval(worker, 2000);
+  setInterval(worker, 1800000);
 }
 
 async function worker() {

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dienstplan/components/settings/dev_settings.dart';
 import 'package:dienstplan/dal/calendar_database.dart';
 import 'package:dienstplan/notifications/notification_server.dart';
 import 'package:dienstplan/screens/all_service_screen.dart';
@@ -15,7 +14,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -103,7 +101,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
           primarySwatch: Colors.red,
           scaffoldBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
-          dialogBackgroundColor: const Color.fromARGB(255, 0, 0, 0),
+          dialogBackgroundColor: const Color.fromARGB(255, 30, 30, 30),
           bottomSheetTheme: Theme.of(context).bottomSheetTheme.copyWith(
                 backgroundColor: const Color.fromARGB(255, 10, 10, 10),
                 shape: const OutlineInputBorder(

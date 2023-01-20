@@ -29,6 +29,7 @@ calendarTemplate: str = readFile('CalendarTemplate.txt')
 # uvicorn testCalendarServer:app --host 0.0.0.0 --port 3000 --reload
 app = FastAPI()
 
+# http://localhost:3000/0/id/Private.ics
 @app.get('/{dayOffset}/{id}/Private.ics', response_class=FileResponse)
 def getDp(dayOffset: int, id: str):
 
@@ -37,6 +38,7 @@ def getDp(dayOffset: int, id: str):
     return FileResponse(file_path)
     pass
 
+# http://localhost:3000/0/id/text
 @app.get('/{dayOffset}/{id}/text', response_model=str)
 def getDp(dayOffset: int, id: str) -> str:
     file_path = getCalendarFile(dayOffset, id)
