@@ -3,7 +3,7 @@ import admin from "firebase-admin";
 import { getMessaging } from "firebase-admin/messaging";
 import { HydratedDocument } from "mongoose";
 
-import { vault } from "@/helpers/secretVault";
+import { vault } from "@/helpers/vault";
 
 const app = admin.initializeApp({
   credential: admin.credential.cert(vault.serviceAccount as admin.ServiceAccount)

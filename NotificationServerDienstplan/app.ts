@@ -5,7 +5,7 @@ import mongoose, { connect } from 'mongoose';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { startDienstplanChangeJob, startDienstplanRemoverJob } from '@/jobs';
-import { vault } from "@/helpers/secretVault";
+import { vault } from "@/helpers/vault";
 
 
 const app: Express = express();
@@ -24,8 +24,8 @@ app.use(errorHandler);
 
 
 initDb().then(() => {
-  startDienstplanChangeJob();
-  startDienstplanRemoverJob();
+  // startDienstplanChangeJob();
+  // startDienstplanRemoverJob();
   app.listen(8000, () => {
     console.log('Server listening on port 8000');
   });
@@ -33,10 +33,10 @@ initDb().then(() => {
 
 async function initDb() {
   mongoose.set('strictQuery', false);
-  let dbUrl = 'localhost';
+  let dbHost = 'localhost';
   if(vault.stage == 'PROD') {
-    dbUrl = vault.dbUrl;
+    dbHost = vault.dbHost;
   }
 
-  await connect('mongodb://' + vault.mongoUsername + ':' + vault.mongoPassword + '@'+dbUrl+':27017/dienstplanapp?authSource=admin');
+  await connect('mongodb://' + vault.mongoUsername + ':' + vault.mongoPassword + '@'+dbHost+':27017/dienstplanapp?authSource=admin');
 } 
