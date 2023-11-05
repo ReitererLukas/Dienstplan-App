@@ -1,7 +1,7 @@
 # STAGE 1 - translate ts to js
 FROM node:16 AS builder
 WORKDIR /app
-COPY package*.json ./
+COPY NotificationServerDienstplan/package*.json ./
 
 ENV NODE_ENV_STAGE="DEV"
 ENV TZ="Europe/Vienna"
@@ -11,15 +11,15 @@ RUN npm install typescript --location=global
 RUN npm install ts-node --location=global
 RUN npm install
 
-COPY . .
+COPY NotificationServerDienstplan/. .
 
 RUN npm run build
 
 # STAGE 2 - deploy js
 FROM node:16 AS deployment
 WORKDIR /app
-COPY package*.json ./
-COPY tsconfig.json ./
+COPY NotificationServerDienstplan/package*.json ./
+COPY NotificationServerDienstplan/tsconfig.json ./
 
 ENV NODE_ENV_STAGE="PROD"
 ENV TZ="Europe/Vienna"
