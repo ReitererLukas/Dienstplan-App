@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:dienstplan/main.dart';
 import 'package:dienstplan/models/user.dart';
 import 'package:dienstplan/stores/user_manager.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,7 +14,7 @@ class NotificationServer {
   Map<String, String> _getHeaders() {
     return {
       "content-type": "application/json",
-      "authorization": dotenv.get("apiPassword")
+      "authorization": "Basic ${base64.encode(utf8.encode("${dotenv.get("apiUsername")}:${dotenv.get("apiPassword")}"))}"
     };
   }
 
@@ -78,7 +77,7 @@ class NotificationServer {
   }
 
   Future<String> _registerDienstplanLinkToApi(Map body) async {
-    http.Response resp = await http.post(Uri.parse("${url}dienstplan/register"),
+    http.Response resp = await http.post(Uri.parse("${url}/dienstplan/register"),
         body: jsonEncode(body), headers: _getHeaders());
     return _handleResponse(resp) ?? "";
   }
@@ -87,7 +86,7 @@ class NotificationServer {
   // => when dp is fetched timer on the server should be updated
   Future<void> refreshTimerOfDienstplanOnServer(String id) async {
     if(_isServerEnabled() && id != "") {
-      http.Response resp = await http.patch(Uri.parse("${url}dienstplan/refreshTimer/$id"),
+      http.Response resp = await http.patch(Uri.parse("${url}/dienstplan/refreshTimer/$id"),
           headers: _getHeaders());
 
       if(resp.statusCode == 404) {
@@ -97,7 +96,7 @@ class NotificationServer {
   }
 
   Future<void> _removeDienstplanLinkFromApi(User user) async {
-    http.Response resp = await http.delete(Uri.parse("${url}dienstplan/remove/${user.notificationId}"),
+    http.Response resp = await http.delete(Uri.parse("${url}/dienstplan/remove/${user.notificationId}"),
         headers: _getHeaders());
     _handleResponse(resp, hasBody: false);
   }
