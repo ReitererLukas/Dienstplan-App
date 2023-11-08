@@ -20,14 +20,6 @@ class Vault {
     this.mongoUsername = "dienstplaner";
     this.mongoPassword = this.readSecretFile("MONGO_PASSWORD");
     this.dbHost = '' + process.env.DB_HOST;
-
-    console.log(this.stage)
-    console.log(this.serviceAccount)
-    console.log(this.apiUsername)
-    console.log(this.apiPassword)
-    console.log(this.mongoUsername)
-    console.log(this.mongoPassword)
-    console.log(this.dbHost)
   }
 
   readSecretFile(name: string): string {
