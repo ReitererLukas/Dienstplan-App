@@ -4,3 +4,4 @@ DBV
 .vscode
 docker-compose-mongo.yaml
 .env
+dist/
