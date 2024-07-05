@@ -1,5 +1,4 @@
 import 'package:dienstplan/models/user.dart';
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 class UserRepo {

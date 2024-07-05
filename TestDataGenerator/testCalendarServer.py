@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, date, time
 from random import Random
 from functools import reduce
 import os
-from utils import readFile, getCalendarPath, getTemplatePath, writeFile
+from .utils import readFile, getCalendarPath, getTemplatePath, writeFile
 
 vehicles = ["NEF", "ID", "KDO"]
 vehicles.extend(["RTW" for i in range(5)])
@@ -47,6 +47,7 @@ def getDp(dayOffset: int, id: str) -> str:
     pass
 
 def createCalendarFile(id: str):
+    print("Hallo")
     Faker.seed(seed=id)
     fake = Faker('de_AT')
     random = Random(id)

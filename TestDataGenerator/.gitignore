@@ -1,2 +1,3 @@
-calendars
+calendars/templates/*.ics
+calendars/*.ics
 __pycache__

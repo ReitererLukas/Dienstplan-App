@@ -1,10 +1,6 @@
 import 'package:dienstplan/helpers/utils.dart';
-import 'package:dienstplan/main.dart';
-import 'package:dienstplan/models/car_types.dart';
 import 'package:dienstplan/models/service.dart';
 import 'package:dienstplan/models/user.dart';
-import 'package:dienstplan/stores/user_manager.dart';
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DienstplanRepo {

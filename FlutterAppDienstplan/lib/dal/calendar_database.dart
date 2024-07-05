@@ -3,7 +3,6 @@ import 'package:dienstplan/dal/repository/dienstplan_repo.dart';
 import 'package:dienstplan/dal/repository/user_repo.dart';
 import 'package:dienstplan/models/service.dart';
 import 'package:dienstplan/models/user.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CalendarDatabase {

@@ -13,6 +13,7 @@ import 'package:dienstplan/stores/user_manager.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,6 +48,9 @@ Future setup() async {
   getIt.registerSingleton<CalendarDatabase>(CalendarDatabase());
 
   prefs = await SharedPreferences.getInstance();
+
+  // ByteData data = await PlatformAssetBundle().load('assets/ca/cert.pem');
+  // SecurityContext.defaultContext.setTrustedCertificatesBytes(data.buffer.asUint8List());
 
   await getIt<CalendarDatabase>().open();
   await getIt<UserManager>().loadUsers();

@@ -19,6 +19,7 @@ class NotificationServer {
   }
 
   String? _handleResponse(http.Response resp, {bool hasBody = true}) {
+    print(resp.statusCode);
     if ([HttpStatus.created, HttpStatus.ok].contains(resp.statusCode) && hasBody) {
       String id = jsonDecode(resp.body)["id"].toString();
       return id;
@@ -77,7 +78,8 @@ class NotificationServer {
   }
 
   Future<String> _registerDienstplanLinkToApi(Map body) async {
-    http.Response resp = await http.post(Uri.parse("${url}/dienstplan/register"),
+    print("$url/dienstplan/register");
+    http.Response resp = await http.post(Uri.parse("$url/dienstplan/register"),
         body: jsonEncode(body), headers: _getHeaders());
     return _handleResponse(resp) ?? "";
   }

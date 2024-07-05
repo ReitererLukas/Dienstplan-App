@@ -3,7 +3,6 @@ import 'package:dienstplan/main.dart';
 import 'package:dienstplan/models/user.dart';
 import 'package:dienstplan/notifications/notification_server.dart';
 import 'package:dienstplan/stores/calendar_manager.dart';
-import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
 // Include generated file
