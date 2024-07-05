@@ -13,6 +13,8 @@ class Vault {
 
 
   constructor() {
+    console.log("Process: ");
+    console.log(process.env);
     console.log("Service Account: " + process.env.NODE_ENV_SERVICE_ACCOUNT);
     console.log("Stage: " + process.env.NODE_ENV_STAGE);
     this.stage = process.env.NODE_ENV_STAGE || "DEV";
