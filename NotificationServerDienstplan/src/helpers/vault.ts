@@ -13,9 +13,11 @@ class Vault {
 
 
   constructor() {
-    console.log(process.env.SERVICE_ACCOUNT);
+    console.log("Service Account: " + process.env.NODE_SERVICE_ACCOUNT);
+    console.log("Stage: " + process.env.NODE_ENV_STAGE);
+    console.log(process.env.NODE_SERVICE_ACCOUNT);
     this.stage = process.env.NODE_ENV_STAGE || "DEV";
-    this.serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT!);
+    this.serviceAccount = JSON.parse(process.env.NODE_SERVICE_ACCOUNT!);
     this.apiUsername = process.env.API_USERNAME!;
     this.apiPassword = process.env.API_PASSWORD!;
     this.mongoUsername = process.env.MONGO_USERNAME!;
