@@ -37,5 +37,6 @@ async function initDb() {
   if(vault.stage == 'PROD') {
     dbHost = vault.dbHost;
   }
+  console.log('mongodb://' + vault.mongoUsername + ':' + vault.mongoPassword + '@'+dbHost+':27017/dienstplanapp?authSource=admin');
   await connect('mongodb://' + vault.mongoUsername + ':' + vault.mongoPassword + '@'+dbHost+':27017/dienstplanapp?authSource=admin');
 } 
