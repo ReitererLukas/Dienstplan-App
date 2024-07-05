@@ -14,19 +14,15 @@ class Vault {
 
   constructor() {
     this.stage = process.env.NODE_ENV_STAGE || "DEV";
-    this.serviceAccount = JSON.parse(this.readSecretFile("SERVICE_ACCOUNT"));
-    this.apiUsername = this.readSecretFile("API_USERNAME");
-    this.apiPassword = this.readSecretFile("API_PASSWORD");
-    this.mongoUsername = "dienstplaner";
-    this.mongoPassword = this.readSecretFile("MONGO_PASSWORD");
+    this.serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
+    this.apiUsername = process.env.API_USERNAME!;
+    this.apiPassword = process.env.API_PASSWORD!;
+    this.mongoUsername = process.env.MONGO_USERNAME!;
+    this.mongoPassword = process.env.MONGO_PASSWORD!;
     this.dbHost = '' + process.env.DB_HOST;
   }
 
   readSecretFile(name: string): string {
-    if (this.stage == "DEV") {
-      return "" + process.env[name];
-    }
-    console.log(process.env[name + "_FILE"])
     return readFileSync(""+process.env[name + "_FILE"], "utf-8")
   }
 
