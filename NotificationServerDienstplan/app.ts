@@ -17,26 +17,26 @@ app.get('/', (req, res) => {
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use(authenticate);
-app.use("/dienstplan", router);
+// app.use(authenticate);
+// app.use("/dienstplan", router);
 
-app.use(errorHandler);
+// app.use(errorHandler);
 
 
 initDb().then(() => {
-  startDienstplanChangeJob();
-  startDienstplanRemoverJob();
+  // startDienstplanChangeJob();
+  // startDienstplanRemoverJob();
   app.listen(8000, () => {
     console.log('Server listening on port 8000');
   });
 });
 
 async function initDb() {
-  mongoose.set('strictQuery', false);
-  let dbHost = 'localhost';
-  if(vault.stage == 'PROD') {
-    dbHost = vault.dbHost;
-  }
-
-  await connect('mongodb://' + vault.mongoUsername + ':' + vault.mongoPassword + '@'+dbHost+':27017/dienstplanapp?authSource=admin');
+  // mongoose.set('strictQuery', false);
+  // let dbHost = 'localhost';
+  // if(vault.stage == 'PROD') {
+  //   dbHost = vault.dbHost;
+  // }
+  // console.log('mongodb://' + vault.mongoUsername + ':' + vault.mongoPassword + '@'+dbHost+':27017/dienstplanapp?authSource=admin')
+  // await connect('mongodb://' + vault.mongoUsername + ':' + vault.mongoPassword + '@'+dbHost+':27017/dienstplanapp?authSource=admin');
 } 
